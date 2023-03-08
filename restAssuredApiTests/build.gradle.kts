@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    testImplementation("io.rest-assured:kotlin-extensions:5.3.0")
 }
 
 tasks.test {
