@@ -1,0 +1,210 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Activity Tracker
+servers:
+  - url: http://localhost:8080/
+paths:
+  /activity:
+    get:
+      summary: List all activities
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            format: int32
+      responses:
+        '200':
+          description: A paged array of activities
+          headers:
+            x-next:
+              description: A link to the next page of responses
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Activities"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Create an activity
+      requestBody:
+        description: "The activity to create."
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Activity"
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Activity"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /activity/{activityId}:
+    get:
+      summary: Info for a specific activity
+      parameters:
+        - name: activityId
+          in: path
+          required: true
+          description: The id of the activity to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Activity"
+        '404':
+          description: No Activity found for id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Update a specific activity
+      parameters:
+        - name: activityId
+          in: path
+          required: true
+          description: The id of the activity to update
+          schema:
+            type: string
+      requestBody:
+        description: "The activity to create."
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Activity"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Activity"
+        '404':
+          description: No Activity found for id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Activity:
+      type: object
+      required:
+        - type
+        - distance
+      properties:
+        id:
+          type: string
+          pattern: '[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$'
+          format: uuid
+          description: "Generated UUID."
+        type:
+          type: string
+          enum: [Run, Bicycle, Hike]
+          description: "The type of activity."
+        distance:
+          type: number
+          format: int32
+          description: "The distance covered in meters."
+        start:
+          type: number
+          format: long
+          description: "Start time in Unix time"
+        finish:
+          type: number
+          format: long
+          description: "Finish time in Unix time"
+    ActivitySummary:
+      type: object
+      properties:
+        activity:
+          type: string
+          enum: [Run, Bicycle, Hike]
+          description: "The type of activity summarized."
+        distance:
+          type: number
+          format: int32
+          description: "The total distance covered in meters."
+        start:
+          type: number
+          format: long
+          description: "Start time of the summary in Unix time"
+        finish:
+          type: number
+          format: long
+          description: "Finish time of the summary in Unix time"
+    Activities:
+      type: array
+      maxItems: 100
+      items:
+        $ref: "#/components/schemas/Activity"
+    Total:
+      type: object
+      properties:
+        totalDistance:
+          type: number
+          format: int32
+          description: "The distance for all activities in the time span added up."
+        totalTime:
+          type: string
+          format: hh:mm:ss
+          description: "The time for all activities in the time span added up."
+        start:
+          type: number
+          format: long
+          description: "Start time of the summary in Unix time"
+        finish:
+          type: number
+          format: long
+          description: "Finish time of the summary in Unix time"
+        activities:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActivitySummary"
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
