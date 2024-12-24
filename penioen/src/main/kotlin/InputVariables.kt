@@ -11,7 +11,7 @@ val beleggingsDepot445 = 21000.0
 val restWaardeB9 = 260000.0
 
 // input bedragen
-var inlegPerJaar = 25000.0
+var inlegPerJaar = 20000.0
 val huurWinst445voor2024 = 7000.0
 val gewenstInkomenMaandNetto = 3500.0
 val gewenstJaarinkomen = gewenstInkomenMaandNetto * 12
@@ -19,11 +19,11 @@ val gewenstJaarinkomen = gewenstInkomenMaandNetto * 12
 // input percentages
 val woningWaardeStijging = 0.04
 val inflatie = 0.03
-val aandelenWaardeStijging = 0.08
+val aandelenWaardeStijging = 0.10
 
 // aow
 val aowLeeftijd = 69
 val aow2024Maand = 1024.0
 
 // deeltijd werken
-val deeltijdLeeftijd = 51
+val deeltijdLeeftijd = 54

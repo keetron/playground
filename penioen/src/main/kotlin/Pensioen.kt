@@ -28,6 +28,7 @@ fun main() {
             huur += huur * (inflatie + 0.01)
             jaarinkomen += jaarinkomen * inflatie
             leeftijd = leeftijd(geboorteDatum, idx + 1)
+            depot += depot * inflatie
             val geenInleg = deeltijdLeeftijd < leeftijd
             vermogen = aandelenvermogen + waarde445 + depot + b9
 
@@ -82,16 +83,10 @@ fun main() {
             b9vk,
             metrics
         )
-//        output[stopLeeftijd] = Output(
-//            stopLeeftijd,
-//            nwl445,
-//            b9vk,
-//            metrics
-//        )
     }
     val pretty = Json { prettyPrint = true }
     val json = pretty.encodeToString(output)
-    File("${inlegPerJaar}.json").writeText(json)
+    File("${inlegPerJaar}-$gewenstInkomenMaandNetto-$aandelenWaardeStijging-$inflatie.json").writeText(json)
 }
 
 fun leeftijd(geboorteDatum: LocalDate, verjaring: Int): Int {
